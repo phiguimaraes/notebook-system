@@ -1,0 +1,226 @@
+import customtkinter as ctk 
+from tkinter import *
+from tkinter import messagebox
+import openpyxl, xlrd
+import pathlib
+from openpyxl import Workbook 
+
+
+### system layout and design 
+
+ctk.set_appearance_mode('System')
+ctk.set_default_color_theme('green')
+
+class App(ctk.CTk):
+    
+    def __init__(self):
+        super().__init__()
+        self.layout_config()
+        self.appearence()
+        self.sistema_design()
+        
+    def layout_config(self): 
+        self.title('Sistema de notebooks') #nome do sistema
+        self.geometry("850x700") #tamanho do sistema 
+    
+    def appearence(self):
+        self.theme_layout = ctk.CTkLabel(self, text='Tema', bg_color='transparent', text_color=['#000', '#fff']).place(x=50, y=600)
+        self.opt_layout = ctk.CTkOptionMenu(self, values=['Light', 'Dark', 'System'], command=self.change_layout).place(x=50, y=620)
+        
+    def sistema_design(self):
+        frame = ctk.CTkFrame(self, width=1000, height=80, corner_radius=10, bg_color='teal', fg_color='teal')
+        frame.place(x=0, y=0) ### quadrado onde irá o título do sistema
+        title = ctk.CTkLabel(frame, text='Sistema de Notebooks', font=('Rosewood Std Regular', 35), text_color='#000').place(x=250, y=20)
+        
+        warning = ctk.CTkLabel(self, text='Preencha os campos abaixo:', font=('Rosewood Std Regular', 18), text_color=['#000', '#fff']).place(x=30, y=100)
+     
+        folder = pathlib.Path("Notebooks.xlsx")
+            
+        if folder.exists():
+            pass
+        else:
+            folder = Workbook()
+            page = folder.active
+            page['A1']="Part number"
+            page['B1']="Nome"
+            page['C1']="Tipo de processador"
+            page['D1']="Processador"
+            page['E1']="Geração do processador"
+            page['F1']="Núcleo/Threads"
+            page['G1']="Memória"
+            page['H1']="Adicional de memória"
+            page['I1']="Armazenamento"
+            page['J1']="Tela"
+            page['K1']="Bateria"
+            page['L1']="Possui RJ45"
+            page['M1']="Possui HDMI"
+            page['N1']="Quantos USB"
+            page['O1']="OBS"
+            
+            folder.save(r"Notebooks.xlsx")
+                
+        def submit():
+            part_number = part_number_value.get()
+            name = name_value.get()
+            processor_type = processor_type_combobox.get()
+            processor = processor_value.get()
+            processor_gen = processor_gen_value.get()
+            core_threads = core_threads_value.get()
+            memory = memory_value.get()
+            memory_add = memory_add_value.get()
+            storage = storage_value.get()
+            screen = screen_value.get()
+            battery = battery_value.get()
+            rj45 = rj45_combobox.get()
+            hdmi = hdmi_combobox.get()
+            usb = usb_combobox.get()
+            text = txt_entry.get(0.0, END)
+            
+            if (part_number == "" or processor_gen == "" or core_threads == ""):
+                messagebox.showerror("Sistema", "ERROR\nPreencha todos os campos")
+                                     
+            else: 
+                folder = openpyxl.load_workbook("Notebooks.xlsx")
+                page = folder.active 
+                page.cell(column=1, row=page.max_row+1, value=part_number)
+                page.cell(column=2, row=page.max_row, value=name)
+                page.cell(column=3, row=page.max_row, value=processor_type)
+                page.cell(column=4, row=page.max_row, value=processor)
+                page.cell(column=5, row=page.max_row, value=processor_gen)
+                page.cell(column=6, row=page.max_row, value=core_threads)
+                page.cell(column=7, row=page.max_row, value=memory)
+                page.cell(column=8, row=page.max_row, value=memory_add)
+                page.cell(column=9, row=page.max_row, value=storage)
+                page.cell(column=10, row=page.max_row, value=screen)
+                page.cell(column=11, row=page.max_row, value=battery)
+                page.cell(column=12, row=page.max_row, value=rj45)
+                page.cell(column=13, row=page.max_row, value=hdmi)
+                page.cell(column=14, row=page.max_row, value=usb)
+                page.cell(column=15, row=page.max_row, value=text)
+            
+                folder.save(r"Notebooks.xlsx")
+                messagebox.showinfo('Sistema', 'Os dados foram salvos :)')
+            
+            
+                        
+        
+        def clear():
+            part_number_value.set("")
+            name_value.set("")
+            processor_value.set("")
+            processor_gen_value.set("")
+            core_threads_value.set("")
+            memory_value.set("")
+            memory_add_value.set("")
+            storage_value.set("")
+            screen_value.set("")
+            battery_value.set("")
+            txt_entry.delete(0.0, END)
+            
+        
+        #TEXT VARIABLES
+        part_number_value = StringVar()
+        name_value = StringVar()
+        processor_value = StringVar()
+        processor_gen_value = StringVar()
+        core_threads_value = StringVar()
+        memory_value = StringVar()
+        memory_add_value = StringVar()
+        storage_value = StringVar()
+        screen_value = StringVar()
+        battery_value = StringVar()
+        
+        
+        #ENTRADAS
+        part_number_entry= ctk.CTkEntry(self, width=350, textvariable=part_number_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        name_entry= ctk.CTkEntry(self, width=350, textvariable=name_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        processor_entry= ctk.CTkEntry(self, width=150, textvariable=processor_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        processor_gen_entry= ctk.CTkEntry(self, width=150, textvariable=processor_gen_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        core_threads_entry = ctk.CTkEntry(self, width=150, textvariable=core_threads_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        memory_entry= ctk.CTkEntry(self, width=150, textvariable=memory_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        memory_add_entry= ctk.CTkEntry(self, width=150, textvariable=memory_add_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        storage_entry= ctk.CTkEntry(self, width=150, textvariable=storage_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        screen_entry= ctk.CTkEntry(self, width=150, textvariable=screen_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        battery_entry= ctk.CTkEntry(self, width=150, textvariable=battery_value, font=('Rosewood Std Regular', 16), fg_color='transparent')
+        
+        #COMBOBOX
+        processor_type_combobox= ctk.CTkComboBox(self, values=['selecione', 'Intel', 'AMD'], font=('Rosewood Std Regular', 16))
+        processor_type_combobox.set('selecione')
+        rj45_combobox= ctk.CTkComboBox(self, values=['selecione', 'Sim', 'Não'], font=('Rosewood Std Regular', 16))
+        rj45_combobox.set('selecione')
+        hdmi_combobox= ctk.CTkComboBox(self, values=['selecione', 'Sim', 'Não'], font=('Rosewood Std Regular', 16))
+        hdmi_combobox.set('selecione')
+        usb_combobox= ctk.CTkComboBox(self, values=['selecione', '0', '1', '2', '3', '4+'], font=('Rosewood Std Regular', 16))
+        usb_combobox.set('selecione')
+        
+        #Textbox 
+        txt_entry= ctk.CTkTextbox(self, width=700, height=100, font=('Rosewood Std Regular', 16), border_color='#aaa', border_width=3, fg_color='transparent')
+        
+        
+        #INFOS
+        lb_part_number = ctk.CTkLabel(self, text='Part number: *', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_name = ctk.CTkLabel(self, text='Nome:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_processor = ctk.CTkLabel(self, text='Processador:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_processor_gen = ctk.CTkLabel(self, text='Ger. processador: *', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_core_threads = ctk.CTkLabel(self, text='Núcleos/threads: *', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_memory = ctk.CTkLabel(self, text='Memória:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_memory_add = ctk.CTkLabel(self, text='Memória add:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_storage = ctk.CTkLabel(self, text='Armazenamento:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_screen = ctk.CTkLabel(self, text='Tela:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_battery = ctk.CTkLabel(self, text='Bateria:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_processor_type = ctk.CTkLabel(self, text='Tipo de processador:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_rj45 = ctk.CTkLabel(self, text='Possui RJ45:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_hdmi = ctk.CTkLabel(self, text='Possui HDMI:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_usb = ctk.CTkLabel(self, text='Entradas USB:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        lb_txt = ctk.CTkLabel(self, text='OBS:', font=('Rosewood Std Regular', 16), text_color=['#000', '#fff'])
+        
+        #button
+        btn_submit = ctk.CTkButton(self, text='Salvar'.upper(), command=submit, fg_color='#151', hover_color='#131').place(x=330, y=600)
+        btn_submit = ctk.CTkButton(self, text='Limpar'.upper(), command=clear, fg_color='#555', hover_color='#333').place(x=480, y=600)
+       
+        #POSITIONS
+        lb_part_number.place(x=30, y=150)
+        part_number_entry.place(x=30, y=180)
+        lb_name.place(x=400, y=150)
+        name_entry.place(x=400, y=180)
+        
+        lb_processor_type.place(x=30, y=220)
+        processor_type_combobox.place(x=30, y=250)
+        lb_processor.place(x=210, y=220)
+        processor_entry.place(x=210, y=250)
+        lb_processor_gen.place(x=400, y=220)
+        processor_gen_entry.place(x=400, y=250)
+        lb_core_threads.place(x=590, y=220)
+        core_threads_entry.place(x=590, y=250)
+        
+        lb_memory.place(x=30, y=290)
+        memory_entry.place(x=30, y=320)
+        lb_memory_add.place(x=210, y=290)
+        memory_add_entry.place(x=210, y=320)
+        lb_storage.place(x=400, y=290)
+        storage_entry.place(x=400, y=320)
+        lb_screen.place(x=590, y=290)
+        screen_entry.place(x=590, y=320)
+        
+        lb_battery.place(x=30, y=360)
+        battery_entry.place(x=30, y=390)
+        lb_rj45.place(x=210, y=360)
+        rj45_combobox.place(x=210, y=390)
+        lb_hdmi.place(x=400, y=360)
+        hdmi_combobox.place(x=400, y=390)
+        lb_usb.place(x=590, y=360)
+        usb_combobox.place(x=590, y=390)
+        
+        lb_txt.place(x=30, y=430)
+        txt_entry.place(x=30, y=460)
+        
+        
+    def change_layout(self, new_layout):
+        ctk.set_appearance_mode(new_layout)
+        
+        
+
+
+if __name__ == '__main__':
+    sistema = App()
+    sistema.mainloop()
